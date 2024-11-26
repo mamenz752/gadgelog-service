@@ -25,6 +25,19 @@ mongoose.connect('mongodb://root:password@localhost:27017/comment?authSource=adm
     console.error('MongoDB接続エラー:', err);
   });
 
+  // get comments
+  app.get('/api/comments/:id', async (req, res) => {
+    try {
+      const ids = req.params.id;
+      const comments = await Comment.find({ article_id: req.params.id });
+      res.status(200).json({ message: 'Comments found', data: comments });
+    } catch (err) {
+      console.log('エラー:', err);
+      res.status(500).json({ message: 'Server error', error: err });
+    }
+  })
+
+
 // POSTリクエストを処理
 app.post('/api/comments', async (req, res) => {
     try {
@@ -45,10 +58,6 @@ app.post('/api/comments', async (req, res) => {
     }
   });
 
-// get
-// app.get('api/comments/:id', async (req, res) => {
-
-// })
 
 // cors
 
