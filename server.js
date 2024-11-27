@@ -13,16 +13,16 @@ const mongoose = require('mongoose');
 // use Schema and Model
 const Comment = require('./models/comment');
 
-// MongoDB接続をアプリケーションの起動時に一度だけ行う
-mongoose.connect('mongodb://root:password@localhost:27017/comment?authSource=admin', { 
+// connect to MongoDB
+mongoose.connect('mongodb://root:password@localhost:27017/comment?authSource=admin', {
   useNewUrlParser: true, 
   useUnifiedTopology: true 
 })
   .then(() => {
-    console.log('MongoDBに接続しました');
+    console.log('connection to MongoDB successful');
   })
   .catch((err) => {
-    console.error('MongoDB接続エラー:', err);
+    console.error('connection to MongoDB error:', err);
   });
 
   // get comments
@@ -32,13 +32,13 @@ mongoose.connect('mongodb://root:password@localhost:27017/comment?authSource=adm
       const comments = await Comment.find({ article_id: req.params.id });
       res.status(200).json({ message: 'Comments found', data: comments });
     } catch (err) {
-      console.log('エラー:', err);
+      console.log('error:', err);
       res.status(500).json({ message: 'Server error', error: err });
     }
   })
 
 
-// POSTリクエストを処理
+// accept POST request
 app.post('/api/comments', async (req, res) => {
     try {
       const comment = new Comment({
@@ -49,7 +49,7 @@ app.post('/api/comments', async (req, res) => {
       });
   
       const result = await comment.save();
-      console.log("コメントの保存成功", result);
+      console.log("save comment successful", result);
       
       res.status(201).json({ message: 'Comment saved successfully', data: result });
     } catch (err) {
@@ -59,7 +59,7 @@ app.post('/api/comments', async (req, res) => {
   });
 
 
-// cors
+// TODO: cors
 
 // use server
 app.listen(SERVER_PORT, () => {
